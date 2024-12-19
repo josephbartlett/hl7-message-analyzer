@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HL7 Message Analyzer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        body {
+            background: #f2f2f2;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header i {
+            color: #20c997;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        #inputData {
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        #parseBtn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            overflow-y: auto;
+            font-family: monospace;
+            max-height: 500px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .output-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        /* Segment Type Coloring */
+        .segment-MSH { color: #6f42c1; font-weight: bold; }
+        .segment-PID { color: #d63384; font-weight: bold; }
+        .segment-OBR { color: #fd7e14; font-weight: bold; }
+        .segment-OBX { color: #20c997; font-weight: bold; }
+        .segment-ORC { color: #0dcaf0; font-weight: bold; }
+        .segment-PV1 { color: #6610f2; font-weight: bold; }
+
+        /* Default segment styling */
+        .segment-default { color: #6c757d; font-weight: bold; }
+
+        /* Field highlights */
+        .field {
+            color: #000;
+        }
+
+        /* Component / subcomponent */
+        .component {
+            color: #0d6efd;
+        }
+        .subcomponent {
+            color: #d63384;
+        }
+
+        /* Hover highlights */
+        .field:hover, .component:hover, .subcomponent:hover {
+            background: #dfefff;
+            cursor: pointer;
+        }
+
+        /* ASCII view */
+        .ascii-view {
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            max-height: 200px;
+            position: relative;
+        }
+
+        /* Non-printable char */
+        .non-printable {
+            background: #ffefc1;
+            border: 1px solid #ccc;
+            padding: 0 2px;
+            border-radius: 3px;
+            color: #b5651d;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Legend */
+        .legend {
+            margin-top: 20px;
+        }
+        .legend h5 {
+            margin-bottom: 10px;
+        }
+        .legend-item {
+            margin-bottom: 5px;
+        }
+
+        /* Spinner */
+        .spinner-border {
+            width: 1rem;
+            height: 1rem;
+            border-width: 2px;
+            margin-left: 5px;
+        }
+
+        @keyframes highlight {
+            0% { background-color: yellow; }
+            100% { background-color: transparent; }
+        }
+
+        .highlight-animation {
+            animation: highlight 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <i class="fas fa-notes-medical"></i>
+        <h2>HL7 Message Analyzer</h2>
+    </div>
+
+    <div class="form-group">
+        <label for="inputData">Paste your raw HL7 message here:</label>
+        <textarea class="form-control" id="inputData" rows="10" placeholder="Paste HL7 message..."></textarea>
+    </div>
+    <button id="parseBtn" class="btn btn-primary">
+        <i class="fas fa-cogs"></i> Parse HL7
+    </button>
+    <span id="loadingIndicator" class="ml-2"></span>
+
+    <div class="output-header">
+        <label for="output" class="mt-4">Parsed Output:</label>
+        <div class="output-buttons" id="buttonsContainer">
+            <button class="btn btn-secondary" id="copyBtn">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+            <button class="btn btn-info" id="asciiToggleBtn">
+                <i class="fas fa-eye"></i> Show ASCII View
+            </button>
+            <button class="btn btn-success" id="searchSegmentsBtn">
+                <i class="fas fa-search"></i> Find Segment
+            </button>
+        </div>
+    </div>
+
+    <div id="output" class="mt-2"></div>
+    <div id="asciiView" class="ascii-view" style="display: none;"></div>
+    
+    <div class="legend">
+        <h5>Legend & Guide</h5>
+        <div class="legend-item"><strong>Segment Names:</strong> Highlighted in different colors (e.g., <span class="segment-MSH">MSH</span>, <span class="segment-PID">PID</span>, <span class="segment-OBR">OBR</span>, etc.)</div>
+        <div class="legend-item"><strong>Fields:</strong> Plain black text. Hover to highlight.</div>
+        <div class="legend-item"><strong>Components:</strong> Blue text <span class="component">Component</span>. Hover to highlight.</div>
+        <div class="legend-item"><strong>Subcomponents:</strong> Pink text <span class="subcomponent">Subcomponent</span>. Hover to highlight.</div>
+        <div class="legend-item"><strong>Non-printable characters:</strong> Shown as <span class="non-printable">[XX]</span> where XX is the hex code.</div>
+        <div class="legend-item"><strong>ASCII View:</strong> Shows each line’s raw ASCII codes, including non-printable characters highlighted. Clicking a character in the parsed output will highlight it here if ASCII view is open.</div>
+        <div class="legend-item"><strong>Search & Navigation:</strong> Use the "Find Segment" button to quickly jump to specific segment types (e.g., MSH, PID).</div>
+    </div>
+</div>
+
+<!-- Dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+let segmentElements = {};
+let currentSegmentType = null;
+let segmentTypeIndices = {};
+
+// We'll store a mapping from parsed output characters to ASCII lines for quick navigation
+// asciiCharElements[lineIndex][charIndex] = element in ASCII view
+let asciiCharElements = [];
+// Also store parsedCharElements[lineIndex][charIndex] = element in parsed output
+let parsedCharElements = [];
+
+const parseBtn = document.getElementById('parseBtn');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const asciiToggleBtn = document.getElementById('asciiToggleBtn');
+const asciiViewDiv = document.getElementById('asciiView');
+const outputDiv = document.getElementById('output');
+
+parseBtn.addEventListener('click', function() {
+    const input = document.getElementById('inputData').value;
+    outputDiv.innerHTML = '';
+    asciiViewDiv.innerHTML = '';
+
+    // Clear previous dynamic buttons
+    const dynamicBtns = document.querySelectorAll('.dynamic-seg-btn');
+    dynamicBtns.forEach(btn => btn.remove());
+
+    segmentElements = {};
+    segmentTypeIndices = {};
+    currentSegmentType = null;
+    asciiCharElements = [];
+    parsedCharElements = [];
+
+    parseBtn.disabled = true;
+    loadingIndicator.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>';
+
+    setTimeout(() => {
+        try {
+            let lines = input.split(/\r?\n/).filter(l => l.trim() !== '');
+            if (lines.length === 0) {
+                throw new Error('No HL7 content found.');
+            }
+
+            // Attempt to detect delimiters from MSH
+            const mshLine = lines.find(line => line.startsWith('MSH'));
+            if (!mshLine) {
+                throw new Error('No MSH segment found. Cannot determine delimiters.');
+            }
+
+            const fieldDelimiter = mshLine.charAt(3);
+            const encodingChars = mshLine.substring(4, 8);
+            const compDelim = encodingChars.charAt(0);
+            const repDelim = encodingChars.charAt(1);
+            const escDelim = encodingChars.charAt(2);
+            const subDelim = encodingChars.charAt(3);
+
+            // Build parsed output HTML with indexing
+            let html = '';
+            parsedCharElements = new Array(lines.length).fill(null).map(()=>[]);
+
+            lines.forEach((line, lineIndex) => {
+                let segmentParts = line.split(fieldDelimiter);
+                let segmentName = segmentParts[0].trim();
+                let segmentClass = getSegmentClass(segmentName);
+
+                html += `<div class="segment-line">`;
+                // Parse segment name characters
+                html += wrapCharacters(segmentName, lineIndex, segmentClass);
+                for (let i = 1; i < segmentParts.length; i++) {
+                    html += wrapCharacters(fieldDelimiter, lineIndex, null);
+                    let fieldVal = segmentParts[i];
+                    let fieldHtml = parseField(fieldVal, compDelim, subDelim, lineIndex);
+                    html += fieldHtml;
+                }
+                html += `</div><br>`;
+                if (!segmentElements[segmentName]) segmentElements[segmentName] = [];
+            });
+
+            outputDiv.innerHTML = html;
+
+            // Build ASCII view
+            asciiViewDiv.innerHTML = buildAsciiView(lines);
+
+            // Now that ASCII is built, we can attach click handlers to output chars
+            // and scroll logic
+            outputDiv.querySelectorAll('span[data-line][data-char]').forEach(el => {
+                el.addEventListener('click', function() {
+                    const lineIdx = parseInt(el.getAttribute('data-line'));
+                    const charIdx = parseInt(el.getAttribute('data-char'));
+                    jumpToAscii(lineIdx, charIdx);
+                });
+            });
+
+            // Create navigation buttons for each segment type found
+            const distinctSegments = getDistinctSegments(lines);
+            distinctSegments.forEach(segName => {
+                let segBtn = document.createElement('button');
+                segBtn.className = 'btn btn-secondary dynamic-seg-btn';
+                segBtn.innerHTML = `<i class="fas fa-tag"></i> ${segName}`;
+                segBtn.style.backgroundColor = getSegmentColor(segName);
+                segBtn.style.color = '#fff';
+                segBtn.addEventListener('click', function() {
+                    navigateSegments(segName);
+                });
+                document.getElementById('buttonsContainer').insertBefore(segBtn, document.getElementById('copyBtn'));
+                segmentTypeIndices[segName] = 0;
+            });
+
+        } catch (e) {
+            outputDiv.innerHTML = '<span style="color: red; font-weight: bold;">Error parsing HL7: ' + e.message + '</span>';
+        } finally {
+            parseBtn.disabled = false;
+            loadingIndicator.innerHTML = '';
+        }
+    }, 300);
+});
+
+function parseField(fieldValue, compDelim, subDelim, lineIndex) {
+    let components = fieldValue.split(compDelim);
+    if (components.length === 1) {
+        // No components
+        return wrapCharacters(fieldValue, lineIndex, 'field');
+    } else {
+        // Multiple components
+        return components.map((comp, compIndex) => {
+            let subcomps = comp.split(subDelim);
+            if (subcomps.length === 1) {
+                let cHtml = wrapCharacters(comp, lineIndex, 'component');
+                if (compIndex < components.length - 1) {
+                    return cHtml + wrapCharacters(compDelim, lineIndex, null);
+                }
+                return cHtml;
+            } else {
+                let scHtml = subcomps.map((sc, scIndex) => {
+                    let sch = wrapCharacters(sc, lineIndex, 'subcomponent');
+                    if (scIndex < subcomps.length - 1) {
+                        return sch + wrapCharacters(subDelim, lineIndex, null);
+                    }
+                    return sch;
+                }).join('');
+                if (compIndex < components.length - 1) {
+                    scHtml += wrapCharacters(compDelim, lineIndex, null);
+                }
+                return wrapElement(scHtml, 'component');
+            }
+        }).join('');
+    }
+}
+
+// Wrap characters in spans with data attributes
+// Also handle non-printables
+function wrapCharacters(str, lineIndex, extraClass) {
+    let arr = [];
+    for (let i = 0; i < str.length; i++) {
+        const ch = str[i];
+        const code = ch.charCodeAt(0);
+        let charHtml = '';
+        if (code < 32 || code === 127) {
+            let hex = code.toString(16).toUpperCase().padStart(2,'0');
+            charHtml = `<span class="non-printable" data-line="${lineIndex}" data-char="${parsedCharElements[lineIndex].length}">[${hex}]</span>`;
+        } else {
+            charHtml = `<span ${extraClass?`class="${extraClass}"`:''} data-line="${lineIndex}" data-char="${parsedCharElements[lineIndex].length}">${escapeHtml(ch)}</span>`;
+        }
+        arr.push(charHtml);
+        parsedCharElements[lineIndex].push(ch);
+    }
+    return arr.join('');
+}
+
+// For wrapping already formed HTML with a class
+function wrapElement(html, cls) {
+    return `<span class="${cls}">${html}</span>`;
+}
+
+function getSegmentClass(segName) {
+    switch (segName.toUpperCase()) {
+        case 'MSH': return 'segment-MSH';
+        case 'PID': return 'segment-PID';
+        case 'OBR': return 'segment-OBR';
+        case 'OBX': return 'segment-OBX';
+        case 'PV1': return 'segment-PV1';
+        case 'ORC': return 'segment-ORC';
+        default: return 'segment-default';
+    }
+}
+
+function getSegmentColor(segName) {
+    // Used for button colors
+    switch (segName.toUpperCase()) {
+        case 'MSH': return '#6f42c1';
+        case 'PID': return '#d63384';
+        case 'OBR': return '#fd7e14';
+        case 'OBX': return '#20c997';
+        case 'PV1': return '#6610f2';
+        case 'ORC': return '#0dcaf0';
+        default: return '#6c757d';
+    }
+}
+
+function escapeHtml(ch) {
+    switch(ch) {
+        case '<': return '&lt;';
+        case '>': return '&gt;';
+        case '&': return '&amp;';
+        case '"': return '&quot;';
+        case "'": return '&#39;';
+        default: return ch;
+    }
+}
+
+document.getElementById('copyBtn').addEventListener('click', function() {
+    let range = document.createRange();
+    range.selectNode(outputDiv);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    try {
+        document.execCommand('copy');
+        alert('Output copied to clipboard!');
+    } catch(err) {
+        alert('Failed to copy text.');
+    }
+    window.getSelection().removeAllRanges();
+});
+
+asciiToggleBtn.addEventListener('click', function() {
+    if (asciiViewDiv.style.display === 'none') {
+        asciiViewDiv.style.display = 'block';
+        asciiToggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide ASCII View';
+    } else {
+        asciiViewDiv.style.display = 'none';
+        asciiToggleBtn.innerHTML = '<i class="fas fa-eye"></i> Show ASCII View';
+    }
+});
+
+function buildAsciiView(lines) {
+    asciiCharElements = new Array(lines.length).fill(null).map(()=>[]);
+    let html = '';
+    lines.forEach((line, idx) => {
+        html += `<div><strong>Line ${idx+1}:</strong> `;
+        for (let i=0; i<parsedCharElements[idx].length; i++) {
+            let origChar = parsedCharElements[idx][i];
+            let code = origChar.charCodeAt(0);
+            let hex = code.toString(16).toUpperCase().padStart(2,'0');
+            if (code < 32 || code === 127) {
+                // Non-printable
+                html += `<span class="non-printable" data-ascii-line="${idx}" data-ascii-char="${i}">[${hex}]</span> `;
+            } else {
+                html += `<span data-ascii-line="${idx}" data-ascii-char="${i}">${origChar}(0x${hex})</span> `;
+            }
+        }
+        html += '</div>';
+    });
+    return html;
+}
+
+function jumpToAscii(lineIdx, charIdx) {
+    if (asciiViewDiv.style.display === 'none') {
+        // If ASCII view not open, open it
+        asciiViewDiv.style.display = 'block';
+        asciiToggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide ASCII View';
+    }
+    let asciiChar = asciiViewDiv.querySelector(`[data-ascii-line="${lineIdx}"][data-ascii-char="${charIdx}"]`);
+    if (asciiChar) {
+        asciiChar.scrollIntoView({behavior: 'smooth', block: 'center'});
+        highlightElement(asciiChar);
+    }
+}
+
+function highlightElement(element) {
+    element.classList.add('highlight-animation');
+    setTimeout(function() {
+        element.classList.remove('highlight-animation');
+    }, 2000);
+}
+
+function getDistinctSegments(lines) {
+    let segSet = new Set();
+    lines.forEach(line => {
+        let segName = line.split('|')[0].trim();
+        if (segName) segSet.add(segName);
+    });
+    return Array.from(segSet);
+}
+
+// Navigation
+function navigateSegments(segmentType) {
+    const els = outputDiv.querySelectorAll(`.${getSegmentClass(segmentType)}`);
+    if (els.length > 0) {
+        let index = segmentTypeIndices[segmentType] || 0;
+        let el = els[index];
+        el.scrollIntoView({behavior: 'smooth', block: 'center'});
+        highlightElement(el);
+        segmentTypeIndices[segmentType] = (index + 1) % els.length;
+    }
+}
+
+// Find segment functionality
+document.getElementById('searchSegmentsBtn').addEventListener('click', function() {
+    let segType = prompt('Enter segment type to find (e.g., MSH, PID, OBR):');
+    if (segType) {
+        segType = segType.trim().toUpperCase();
+        navigateSegments(segType);
+    }
+});
+</script>
+
+</body>
+</html>

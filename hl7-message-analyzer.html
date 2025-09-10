@@ -299,10 +299,8 @@
     <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
     <script>
-    let segmentElements = {};
     let currentSegmentType = null;
     let segmentTypeIndices = {};
-    let asciiCharElements = [];
     let parsedCharElements = [];
 
     const parseBtn = document.getElementById('parseBtn');
@@ -333,10 +331,8 @@
         const dynamicBtns = document.querySelectorAll('.dynamic-seg-btn');
         dynamicBtns.forEach(btn => btn.remove());
 
-        segmentElements = {};
         segmentTypeIndices = {};
         currentSegmentType = null;
-        asciiCharElements = [];
         parsedCharElements = [];
 
         parseBtn.disabled = true;
@@ -380,7 +376,6 @@
                         html += fieldHtml;
                     }
                     html += `</div><br>`;
-                    if (!segmentElements[segmentName]) segmentElements[segmentName] = [];
                 });
 
                 outputDiv.innerHTML = html;
@@ -542,7 +537,6 @@
     });
 
     function buildAsciiView(lines) {
-        asciiCharElements = new Array(lines.length).fill(null).map(()=>[]);
         let html = '';
         lines.forEach((line, idx) => {
             html += `<div><strong>Line ${idx+1}:</strong> `;

@@ -288,6 +288,12 @@
         <p>Free and open source under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer" style="color:#17a2b8;">MIT License</a>.</p>
     </footer>
 
+    <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 1rem; right: 1rem; z-index: 1080;">
+        <div id="copyToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
     <script defer src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
@@ -304,6 +310,19 @@
     const asciiToggleBtn = document.getElementById('asciiToggleBtn');
     const asciiViewDiv = document.getElementById('asciiView');
     const outputDiv = document.getElementById('output');
+
+    function showCopyToast(message, isError = false) {
+        const toastEl = $('#copyToast');
+        const bodyEl = toastEl.find('.toast-body');
+        bodyEl.text(message);
+        toastEl.removeClass('bg-success bg-danger text-white');
+        if (isError) {
+            toastEl.addClass('bg-danger text-white');
+        } else {
+            toastEl.addClass('bg-success text-white');
+        }
+        toastEl.toast('show');
+    }
 
     parseBtn.addEventListener('click', function() {
         const input = document.getElementById('inputData').value;
@@ -486,17 +505,30 @@
     }
 
     document.getElementById('copyBtn').addEventListener('click', function() {
-        let range = document.createRange();
-        range.selectNode(outputDiv);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-        try {
-            document.execCommand('copy');
-            alert('Output copied to clipboard!');
-        } catch(err) {
-            alert('Failed to copy text.');
+        const text = outputDiv.innerText;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyToast('Output copied to clipboard!');
+            }).catch(() => {
+                fallbackCopy();
+            });
+        } else {
+            fallbackCopy();
         }
-        window.getSelection().removeAllRanges();
+
+        function fallbackCopy() {
+            let range = document.createRange();
+            range.selectNode(outputDiv);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            try {
+                document.execCommand('copy');
+                showCopyToast('Output copied to clipboard!');
+            } catch(err) {
+                showCopyToast('Failed to copy text.', true);
+            }
+            window.getSelection().removeAllRanges();
+        }
     });
 
     asciiToggleBtn.addEventListener('click', function() {

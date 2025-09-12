@@ -15,6 +15,7 @@ Our roadmap outlines upcoming work on HL7 Message Analyzer.
 - [ ] Performance optimizations
 
 ## Localization
+- [ ] Research and design localization strategy
 - [ ] Multi-language interface
 - [ ] Date and time localization
 - [ ] Internationalized segment labels

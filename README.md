@@ -2,6 +2,8 @@
 
 A sleek, lightweight tool to parse and analyze raw HL7 messages. Paste your HL7 content, hit "Parse HL7," and instantly transform complex segments into a readable, well-structured output.
 
+See the [project roadmap](ROADMAP.md) for upcoming milestones.
+
 ## Features
 
 - **One-Click Parsing:** Paste an HL7 message and parse it with a single click.

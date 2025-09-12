@@ -27,6 +27,14 @@ A sleek, lightweight tool to parse and analyze raw HL7 messages. Paste your HL7 
 
 Simply open `hl7-message-analyzer.html` in your browser. No server required.
 
-## Contributions
+## Localization
 
-Contributions are welcome! Feel free to open issues or PRs with suggestions, bug fixes, or improvements.
+Select your preferred language using the **Language** menu in the interface. Translations live in the `locales/` folder. To add a new language, copy an existing file, translate the strings, and submit a pull request.
+
+## Roadmap
+
+Current milestones focus on a command-line interface, community-driven localization, and export options. See [ROADMAP.md](ROADMAP.md) for the full roadmap.
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on submitting issues and pull requests.

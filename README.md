@@ -35,7 +35,7 @@ Localization support is under research and not yet available.
 
 ## Roadmap
 
-Current milestones focus on a command-line interface and export options. See [ROADMAP.md](ROADMAP.md) for the full roadmap.
+Current milestones focus on a command-line interface and export options. Localization remains a future milestone that requires further research. See [ROADMAP.md](ROADMAP.md) for the full roadmap.
 
 ## Contributing
 

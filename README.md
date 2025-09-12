@@ -31,11 +31,11 @@ Simply open `hl7-message-analyzer.html` in your browser. No server required.
 
 ## Localization
 
-Select your preferred language using the **Language** menu in the interface. Translations live in the `locales/` folder. To add a new language, copy an existing file, translate the strings, and submit a pull request.
+Localization support is under research and not yet available.
 
 ## Roadmap
 
-Current milestones focus on a command-line interface, community-driven localization, and export options. See [ROADMAP.md](ROADMAP.md) for the full roadmap.
+Current milestones focus on a command-line interface and export options. Localization remains a future milestone that requires further research. See [ROADMAP.md](ROADMAP.md) for the full roadmap.
 
 ## Contributing
 

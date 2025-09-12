@@ -7,7 +7,6 @@ Thanks for your interest in contributing! This document outlines how to work wit
 ```
 root
 ├── hl7-message-analyzer.html   # Main HTML/JS/CSS file for the tool
-├── translations/               # JSON-based translations (one file per locale)
 ├── README.md                   # Overview and usage instructions
 └── LICENSE                     # Project license
 ```
@@ -26,15 +25,9 @@ python -m http.server
 # then visit http://localhost:8000/hl7-message-analyzer.html
 ```
 
-## Adding translations
+## Localization
 
-1. Place translation files in the `translations/` directory.
-2. Use JSON format and name files with the locale code, e.g., `en.json`, `fr.json`.
-3. Each file should mirror the keys in the default English file.
-4. Submit the translation in a pull request. Include:
-   - A brief description of the locale.
-   - Any screenshots or notes that help reviewers verify the translation.
-5. Maintainers review translations for completeness, JSON validity, and naming.
+Localization support is under research, and translation contributions are not yet accepted.
 
 ## Reporting issues
 

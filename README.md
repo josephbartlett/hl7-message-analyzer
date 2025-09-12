@@ -31,7 +31,7 @@ Simply open `hl7-message-analyzer.html` in your browser. No server required.
 
 ## Localization
 
-Translation support is not yet implemented.
+Localization support is under research and not yet available.
 
 ## Roadmap
 

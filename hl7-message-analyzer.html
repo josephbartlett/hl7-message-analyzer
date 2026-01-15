@@ -3,35 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HL7 Message Analyzer – Free Browser Tool | HL7 Tools</title>
+    <title>HL7 Message Analyzer – Free Browser Tool</title>
     <meta name="description" content="Free browser-based HL7 v2 message analyzer. Parse, visualize, and debug HL7 messages with color-coded segments, search, and ASCII view—runs locally in your browser." />
-    <meta name="author" content="HL7 Tools" />
+    <meta name="author" content="HL7 Message Analyzer" />
     <meta name="robots" content="index,follow" />
-    <link rel="canonical" href="https://hl7tools.io/hl7-message-analyzer.html" />
-    <meta property="og:site_name" content="HL7 Tools" />
+    <meta property="og:site_name" content="HL7 Message Analyzer" />
     <meta property="og:description" content="Parse and visualize HL7 v2.x messages directly in your browser. Free and open source." />
-    <meta property="og:url" content="https://hl7tools.io/hl7-message-analyzer.html" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://hl7tools.io/icon.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="HL7 Message Analyzer - HL7 Tools" />
+    <meta name="twitter:title" content="HL7 Message Analyzer" />
     <meta name="twitter:description" content="Parse and visualize HL7 v2.x messages directly in your browser. Free and open source." />
-    <meta name="twitter:image" content="https://hl7tools.io/icon.png" />
-
-    <!-- Structured Data (Organization) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "HL7 Tools",
-      "url": "https://hl7tools.io",
-      "logo": "https://hl7tools.io/icon.png",
-      "description": "Secure, browser-based HL7 and FHIR tools for healthcare integration professionals.",
-      "sameAs": [
-        "https://github.com/josephbartlett"
-      ]
-    }
-    </script>
 
     <!-- Styles & Fonts -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -196,32 +177,32 @@
 
 </head>
 <body>
-    <header class="header">
+    <header class="header" id="top">
         <div class="container">
             <h1 class="h2">HL7 Message Analyzer</h1>
-            <p class="mb-0">Secure, browser-based tools for healthcare integration professionals.</p>
+            <p class="mb-0">Parse, visualize, and debug HL7 v2.x messages locally in your browser.</p>
         </div>
     </header>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="https://hl7tools.io/">HL7 Tools</a>
+            <a class="navbar-brand" href="#top">HL7 Message Analyzer</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="https://hl7tools.io/#hl7-analyzer">HL7 Message Analyzer</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://hl7tools.io/#fhir-formatter">FHIR Response Formatter</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://hl7tools.io/#privacy">Privacy Policy</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://hl7tools.io/#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#analyzer">Analyzer</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#legend">Legend</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#resources">Resources</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#license">License</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main class="container container-tool">
+    <main class="container container-tool" id="analyzer">
         <div class="mb-4">
             <h2 class="h4">HL7 Message Analyzer</h2>
             <p>Use this tool to parse and understand HL7 v2.x messages. It highlights segments, fields, and components, offers a search feature to locate segments, and provides an ASCII view for deeper inspection. Your data is processed locally for maximum privacy.</p>
@@ -260,7 +241,7 @@
         <div id="output" class="mt-2"></div>
         <div id="asciiView" class="ascii-view" style="display: none;"></div>
 
-        <div class="legend">
+        <div class="legend" id="legend">
             <h5>Legend & Guide</h5>
             <div class="legend-item"><strong>Segment Names:</strong> Highlighted in different colors (e.g., <span class="segment-MSH">MSH</span>, <span class="segment-PID">PID</span>, <span class="segment-OBR">OBR</span>, etc.)</div>
             <div class="legend-item"><strong>Fields:</strong> Plain black text. Hover to highlight.</div>
@@ -271,7 +252,7 @@
             <div class="legend-item"><strong>Search & Navigation:</strong> Use the "Find Segment" button to quickly jump to specific segment types (e.g., MSH, PID).</div>
         </div>
 
-        <section class="my-5">
+        <section class="my-5" id="resources">
             <h5>Additional Resources</h5>
             <p>For more information on HL7 standards and related materials:</p>
             <ul>
@@ -282,8 +263,8 @@
         </section>
     </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 HL7Tools.io. All rights reserved.</p>
+    <footer class="footer" id="license">
+        <p>&copy; 2024 Joe Bartlett.</p>
         <p>Free and open source under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer" style="color:#17a2b8;">MIT License</a>.</p>
     </footer>
 
@@ -301,6 +282,10 @@
     let currentSegmentType = null;
     let segmentTypeIndices = {};
     let parsedCharElements = [];
+    let parsedLines = [];
+    let asciiViewBuilt = false;
+    const ASCII_MAX_LINES = 500;
+    const ASCII_MAX_CHARS = 200000;
 
     const parseBtn = document.getElementById('parseBtn');
     const loadingIndicator = document.getElementById('loadingIndicator');
@@ -325,6 +310,7 @@
         const input = document.getElementById('inputData').value;
         outputDiv.innerHTML = '';
         asciiViewDiv.innerHTML = '';
+        asciiViewBuilt = false;
 
         // Clear previous dynamic buttons
         const dynamicBtns = document.querySelectorAll('.dynamic-seg-btn');
@@ -333,13 +319,14 @@
         segmentTypeIndices = {};
         currentSegmentType = null;
         parsedCharElements = [];
+        parsedLines = [];
 
         parseBtn.disabled = true;
         loadingIndicator.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>';
 
         setTimeout(() => {
             try {
-                let lines = input.split(/\r?\n/).filter(l => l.trim() !== '');
+                let lines = input.split(/\r\n|\n|\r/).filter(l => l.trim() !== '');
                 if (lines.length === 0) {
                     throw new Error('No HL7 content found.');
                 }
@@ -378,9 +365,11 @@
                 });
 
                 outputDiv.innerHTML = html;
-
-                // Build ASCII view
-                asciiViewDiv.innerHTML = buildAsciiView(lines);
+                parsedLines = lines;
+                asciiViewBuilt = false;
+                if (asciiViewDiv.style.display !== 'none') {
+                    ensureAsciiView();
+                }
 
                 // Now that ASCII is built, we can attach click handlers
                 outputDiv.querySelectorAll('span[data-line][data-char]').forEach(el => {
@@ -392,7 +381,7 @@
                 });
 
                 // Create navigation buttons for each segment type found
-                const distinctSegments = getDistinctSegments(lines);
+                const distinctSegments = getDistinctSegments(lines, fieldDelimiter);
                 distinctSegments.forEach(segName => {
                     let segBtn = document.createElement('button');
                     segBtn.className = 'btn btn-secondary dynamic-seg-btn';
@@ -529,17 +518,38 @@
         if (asciiViewDiv.style.display === 'none') {
             asciiViewDiv.style.display = 'block';
             asciiToggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide ASCII View';
+            ensureAsciiView();
         } else {
             asciiViewDiv.style.display = 'none';
             asciiToggleBtn.innerHTML = '<i class="fas fa-eye"></i> Show ASCII View';
         }
     });
 
+    function ensureAsciiView() {
+        if (asciiViewBuilt || parsedLines.length === 0) {
+            return;
+        }
+        asciiViewDiv.innerHTML = buildAsciiView(parsedLines);
+        asciiViewBuilt = true;
+    }
+
     function buildAsciiView(lines) {
         let html = '';
-        lines.forEach((line, idx) => {
+        let totalChars = 0;
+        let truncated = false;
+        let renderedLines = 0;
+        for (let idx = 0; idx < lines.length; idx++) {
+            if (renderedLines >= ASCII_MAX_LINES) {
+                truncated = true;
+                break;
+            }
+            let lineChars = parsedCharElements[idx].length;
+            if (totalChars + lineChars > ASCII_MAX_CHARS) {
+                truncated = true;
+                break;
+            }
             html += `<div><strong>Line ${idx+1}:</strong> `;
-            for (let i=0; i<parsedCharElements[idx].length; i++) {
+            for (let i=0; i<lineChars; i++) {
                 let origChar = parsedCharElements[idx][i];
                 let code = origChar.charCodeAt(0);
                 let hex = code.toString(16).toUpperCase().padStart(2,'0');
@@ -550,7 +560,12 @@
                 }
             }
             html += '</div>';
-        });
+            totalChars += lineChars;
+            renderedLines++;
+        }
+        if (truncated) {
+            html += `<div class="text-muted">ASCII view truncated for performance. Showing ${renderedLines} lines and ${totalChars} characters.</div>`;
+        }
         return html;
     }
 
@@ -559,6 +574,7 @@
             asciiViewDiv.style.display = 'block';
             asciiToggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide ASCII View';
         }
+        ensureAsciiView();
         let asciiChar = asciiViewDiv.querySelector(`[data-ascii-line="${lineIdx}"][data-ascii-char="${charIdx}"]`);
         if (asciiChar) {
             asciiChar.scrollIntoView({behavior: 'smooth', block: 'center'});
@@ -573,10 +589,11 @@
         }, 2000);
     }
 
-    function getDistinctSegments(lines) {
+    function getDistinctSegments(lines, fieldDelimiter) {
         let segSet = new Set();
         lines.forEach(line => {
-            let segName = line.split('|')[0].trim();
+            let delimIndex = line.indexOf(fieldDelimiter);
+            let segName = (delimIndex === -1 ? line : line.slice(0, delimIndex)).trim();
             if (segName) segSet.add(segName);
         });
         return Array.from(segSet);
